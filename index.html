@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>MineBox Шифратор</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: #f0f0f0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    #auth, #main {
+      background: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #333;
+      max-width: 600px;
+      width: 100%;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
+      background: #2a2a2a;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px;
+      resize: none;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #3b82f6;
+      border: none;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #2563eb;
+    }
+    #error {
+      color: red;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="auth">
+  <h2>🔒 Введите пароль для доступа</h2>
+  <input type="password" id="password" placeholder="Пароль">
+  <button onclick="checkPassword()">Войти</button>
+  <div id="error"></div>
+</div>
+
+<div id="main" style="display:none;">
+  <h2>💬 MineBox Шифратор / Дешифратор</h2>
+
+  <label>Исходный текст:</label>
+  <textarea id="inputText" placeholder="Введите текст для шифрования..."></textarea>
+  <button onclick="encrypt()">🔐 Зашифровать</button>
+
+  <label>Зашифрованный текст:</label>
+  <textarea id="outputText" readonly></textarea>
+
+  <hr style="margin: 20px 0; border: 1px solid #333;">
+
+  <label>Вставьте зашифрованный текст для расшифровки:</label>
+  <textarea id="decryptInput" placeholder="Введите зашифрованный текст..."></textarea>
+  <button onclick="decrypt()">🔓 Расшифровать</button>
+
+  <label>Результат расшифровки:</label>
+  <textarea id="decryptedText" readonly></textarea>
+</div>
+
+<script>
+  const PASSWORD = "ostermine-aternos.org-mineboxshifrator-1.21.9";
+  const map = new Map(); // Ключ: шифр -> значение: оригинал
+
+  function checkPassword() {
+    const input = document.getElementById("password").value;
+    if (input === PASSWORD) {
+      document.getElementById("auth").style.display = "none";
+      document.getElementById("main").style.display = "block";
+    } else {
+      document.getElementById("error").innerText = "❌ Неверный пароль";
+    }
+  }
+
+  function generateRandomString(length = 48) {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-={}[]<>?/';
+    let result = 'mine_u';
+    for (let i = 0; i < length; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  }
+
+  function encrypt() {
+    const text = document.getElementById("inputText").value.trim();
+    if (!text) return;
+    let encrypted = generateRandomString();
+    map.set(encrypted, text);
+    document.getElementById("outputText").value = encrypted;
+    document.getElementById("decryptedText").value = "";
+  }
+
+  function decrypt() {
+    const encrypted = document.getElementById("decryptInput").value.trim();
+    const original = map.get(encrypted);
+    document.getElementById("decryptedText").value = original || "❌ Не найдено";
+  }
+</script>
+
+</body>
+</html>
